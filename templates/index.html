@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apex Legends Randomizer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff4757, #ff6348);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 71, 87, 0.3);
+        }
+
+        .subtitle {
+            color: #a8b2d1;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .result-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid #4ecdc4;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .result-item {
+            margin: 20px 0;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s forwards;
+        }
+
+        .result-item:nth-child(1) { animation-delay: 0.1s; }
+        .result-item:nth-child(2) { animation-delay: 0.3s; }
+        .result-item:nth-child(3) { animation-delay: 0.5s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-label {
+            color: #a8b2d1;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .legend-value {
+            color: #ff6348;
+            text-shadow: 0 0 20px rgba(255, 99, 72, 0.5);
+        }
+
+        .gun-value {
+            color: #ffd93d;
+            text-shadow: 0 0 20px rgba(255, 217, 61, 0.5);
+        }
+
+        .generate-btn {
+            background: linear-gradient(45deg, #ff4757, #ff6348);
+            border: none;
+            padding: 20px 60px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(255, 71, 87, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 71, 87, 0.6);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .loading {
+            color: #4ecdc4;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="emoji">🎮</div>
+        <h1>APEX LEGENDS</h1>
+        <p class="subtitle">Random Loadout Generator</p>
+        
+        <div class="result-box" id="resultBox">
+            <p class="loading">Click the button to generate your loadout!</p>
+        </div>
+        
+        <button class="generate-btn" onclick="generateLoadout()">
+            Generate Loadout
+        </button>
+    </div>
+
+    <script>
+        async function generateLoadout() {
+            const resultBox = document.getElementById('resultBox');
+            resultBox.innerHTML = '<p class="loading">Generating...</p>';
+            
+            try {
+                const response = await fetch('/api/random');
+                const data = await response.json();
+                
+                resultBox.innerHTML = `
+                    <div class="result-item">
+                        <div class="result-label">Legend</div>
+                        <div class="result-value legend-value">${data.legend}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Gun 1</div>
+                        <div class="result-value gun-value">${data.gun1}</div>
+                    </div>
+                    <div class="result-item">
+                        <div class="result-label">Gun 2</div>
+                        <div class="result-value gun-value">${data.gun2}</div>
+                    </div>
+                `;
+            } catch (error) {
+                resultBox.innerHTML = '<p class="loading">Error loading loadout. Try again!</p>';
+            }
+        }
+    </script>
+</body>
+</html>
