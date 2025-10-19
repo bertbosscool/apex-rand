@@ -1,4 +1,8 @@
 import random
+from flask import Flask, render_template, jsonify
+
+app = Flask(__name__)
+
 legends = [
     "Alter","Ash","Ballistic","Bangalore","Bloodhound","Catalyst","Caustic","Conduit",
     "Crypto","Fuse","Gibraltar","Horizon","Lifeline","Loba","Mad Maggie","Mirage",
@@ -13,10 +17,21 @@ guns = [
     "RE-45","P2020","Wingman"
 ]
 
-randLegend = legends[random.randrange(0,len(legends))]
-randGun1 = guns[random.randrange(0,len(guns))]
-randGun2 = guns[random.randrange(0,len(guns))]
+@app.route('/')
+def index():
+    return render_template('index.html')
 
+@app.route('/api/random')
+def get_random():
+    randLegend = random.choice(legends)
+    randGun1 = random.choice(guns)
+    randGun2 = random.choice(guns)
+    
+    return jsonify({
+        'legend': randLegend,
+        'gun1': randGun1,
+        'gun2': randGun2
+    })
 
-message = f"Legend: {randLegend}\nGun 1: {randGun1}\nGun 2: {randGun2}"
-print(message)
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000, debug=False)
